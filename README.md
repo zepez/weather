@@ -4,7 +4,7 @@ This is a web scraper written in Go. Currently scrapes [forecast.weather.gov](ht
 
 This is a work in progress. To do: 
 
-- Currently stops scraping when it runs into a <br> tag. 
+- Currently stops scraping when it runs into a ```<br>``` tag. 
 - Automate via a cronjob. 
 - Docker container.
 - Configurable via environment variables. 
