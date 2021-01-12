@@ -96,9 +96,9 @@ func home(w http.ResponseWriter, r *http.Request) {
 func handleRequests() {
 	http.HandleFunc("/", home)
 	// log, listening on port 10000
-	fmt.Println("listening on port 10000")
+	fmt.Println("listening on port " + os.Getenv("port"))
 	// listen on port 10000
-	log.Fatal(http.ListenAndServe(":10000", nil))
+	log.Fatal(http.ListenAndServe(":"+os.Getenv("port"), nil))
 }
 
 // split string via camel case into slice
@@ -121,5 +121,6 @@ func splitString(s string) string {
 func main() {
 	// set env variables for dev
 	os.Setenv("url", "https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
+	os.Setenv("port", "3000")
 	handleRequests()
 }
