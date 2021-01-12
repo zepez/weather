@@ -3,8 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"net/http"
+	"strings"
 	"time"
 
+	"github.com/fatih/camelcase"
 	"github.com/gocolly/colly/v2"
 )
 
@@ -24,7 +28,9 @@ type day struct {
 	Temp      string
 }
 
-func main() {
+// home route logic
+func home(w http.ResponseWriter, r *http.Request) {
+
 	// define domain
 	url := "forecast.weather.gov"
 	// create res
@@ -58,8 +64,16 @@ func main() {
 		// period of time
 		tempDay.Period = e.ChildText(".period-name")
 
-		// short description
-		tempDay.Condition = e.ChildText(".short-desc")
+		// short description. cleaned up
+		// get text
+		desc := e.ChildText(".short-desc")
+		// split on camel case (didn't bring over linebreaks)
+		// and delete any empty slices
+		descSplit := delete_empty(camelcase.Split(desc))
+		// join slice with space between
+		descJoin := strings.Join(descSplit, " ")
+		// add to tempday
+		tempDay.Condition = descJoin
 
 		// get image
 		tempDay.Image = (url + "/" + e.ChildAttr("img", "src"))
@@ -74,8 +88,38 @@ func main() {
 	// visit page
 	c.Visit("https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
 
+	// wait. visit all pages first
 	c.Wait()
 
+	// convert res to json
 	json, _ := json.Marshal(res)
-	fmt.Println(string(json))
+
+	// send response
+	fmt.Fprintf(w, string(json))
+	fmt.Println("Endpoint Hit: home")
+}
+
+func handleRequests() {
+	// set up routes
+	http.HandleFunc("/", home)
+	// log, listening on port 10000
+	fmt.Println("listening on port 10000")
+	// listen on port 10000
+	log.Fatal(http.ListenAndServe(":10000", nil))
+
+}
+
+// run main
+func main() {
+	handleRequests()
+}
+
+func delete_empty(s []string) []string {
+	var r []string
+	for _, str := range s {
+		if str != " " {
+			r = append(r, str)
+		}
+	}
+	return r
 }
