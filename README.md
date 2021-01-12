@@ -1,6 +1,6 @@
 # Weather web scraper
 
-This is a web scraper written in Go. Currently scrapes [forecast.weather.gov](https://www.weather.gov/) for Wilson, North Carolina only. Using [Colly](http://go-colly.org/).
+This is a [forecast.weather.gov](https://www.weather.gov/) web scraper written in Go. Using [Colly](http://go-colly.org/).
 
 ### Features
 
