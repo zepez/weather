@@ -1,17 +1,24 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/robfig/cron/v3"
 )
 
 // home route logic
 func home(w http.ResponseWriter, r *http.Request) {
 
 	// getdata. pass in link
-	json := GetData(r.FormValue("q"))
+	response := GetData(r.FormValue("q"))
+	// convert res to json
+	resMarshalled, _ := json.Marshal(response)
+	json := string(resMarshalled)
 
 	// send response
 	fmt.Fprintf(w, string(json))
@@ -31,5 +38,43 @@ func main() {
 	// set env variables for dev
 	os.Setenv("url", "https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
 	os.Setenv("port", "3000")
+	os.Setenv("cron", "* * * * *")
+	os.Setenv("endpoint", "http://localhost:3001/rail/test")
+
+	if len(os.Getenv("cron")) > 0 {
+		cj := cron.New()
+		cj.AddFunc(os.Getenv("cron"), func() {
+			// getdata. pass in link
+			response := GetData(os.Getenv("url"))
+			jsonMarsh, _ := json.Marshal(response)
+			buf := bytes.NewBuffer(jsonMarsh)
+
+			fmt.Println(response)
+
+			// send response
+			// create new reponse, get req and err
+			req, err := http.NewRequest("POST", os.Getenv("endpoint"), buf)
+
+			// set headers here
+			req.Header.Set("Content-Type", "application/json")
+
+			// error handling
+			client := &http.Client{}
+			resp, err := client.Do(req)
+			if err != nil {
+				panic(err)
+			}
+			defer resp.Body.Close()
+
+			// uncomment below for debug
+			// fmt.Println("response Status:", resp.Status)
+			// fmt.Println("response Headers:", resp.Header)
+			// body, _ := ioutil.ReadAll(resp.Body)
+			// fmt.Println("response Body:", string(body))
+		})
+
+		cj.Start()
+	}
+
 	handleRequests()
 }

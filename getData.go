@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"os"
 	"strings"
 	"time"
 
@@ -27,13 +25,7 @@ type day struct {
 }
 
 // home route logic
-func GetData(url string) string {
-
-	// if there's no input query
-	// use the url env var to find data
-	if len(url) < 1 {
-		url = os.Getenv("url")
-	}
+func GetData(url string) interface{} {
 
 	// define domain
 	domain := "forecast.weather.gov"
@@ -87,10 +79,8 @@ func GetData(url string) string {
 	// wait. visit all pages first
 	c.Wait()
 
-	// convert res to json
-	json, _ := json.Marshal(res)
-
-	return string(json)
+	// return value
+	return res
 }
 
 func splitString(s string) string {
