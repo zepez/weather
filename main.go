@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -61,19 +62,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 		// create temp day var
 		tempDay := day{}
 
-		// period of time
-		tempDay.Period = e.ChildText(".period-name")
+		// period of time. cleaned up
+		tempDay.Period = splitString(e.ChildText(".period-name"))
 
 		// short description. cleaned up
-		// get text
-		desc := e.ChildText(".short-desc")
-		// split on camel case (didn't bring over linebreaks)
-		// and delete any empty slices
-		descSplit := delete_empty(camelcase.Split(desc))
-		// join slice with space between
-		descJoin := strings.Join(descSplit, " ")
-		// add to tempday
-		tempDay.Condition = descJoin
+		tempDay.Condition = splitString(e.ChildText(".short-desc"))
 
 		// get image
 		tempDay.Image = (url + "/" + e.ChildAttr("img", "src"))
@@ -86,7 +79,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 	})
 
 	// visit page
-	c.Visit("https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
+	c.Visit(os.Getenv("url"))
 
 	// wait. visit all pages first
 	c.Wait()
@@ -99,27 +92,34 @@ func home(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("Endpoint Hit: home")
 }
 
+// set up routes
 func handleRequests() {
-	// set up routes
 	http.HandleFunc("/", home)
 	// log, listening on port 10000
 	fmt.Println("listening on port 10000")
 	// listen on port 10000
 	log.Fatal(http.ListenAndServe(":10000", nil))
-
 }
 
-// run main
-func main() {
-	handleRequests()
-}
+// split string via camel case into slice
+// clean slice of empties
+// join slice with space
+func splitString(s string) string {
+	arr := camelcase.Split(s)
+	var cleanedArr []string
 
-func delete_empty(s []string) []string {
-	var r []string
-	for _, str := range s {
+	for _, str := range arr {
 		if str != " " {
-			r = append(r, str)
+			cleanedArr = append(cleanedArr, str)
 		}
 	}
-	return r
+
+	joined := strings.Join(cleanedArr, " ")
+	return joined
+}
+
+func main() {
+	// set env variables for dev
+	os.Setenv("url", "https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
+	handleRequests()
 }
