@@ -1,6 +1,6 @@
 ### Weather web scraper
 
-This is a web scraper written in Go. Currently scrapes [Restoration NewsMedia](https://restorationnewsmedia.com/) for Wilson, North Carolina only. Using [Colly](http://go-colly.org/).
+This is a web scraper written in Go. Currently scrapes [forecast.weather.gov](https://www.weather.gov/) for Wilson, North Carolina only. Using [Colly](http://go-colly.org/).
 
 This is a work in progress. To do: 
 
