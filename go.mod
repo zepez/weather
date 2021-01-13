@@ -1,4 +1,4 @@
-module weather
+module github.com/zepez/weather
 
 go 1.15
 
