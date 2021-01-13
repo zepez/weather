@@ -35,11 +35,11 @@ func handleRequests() {
 }
 
 func main() {
-	// set env variables for dev
-	os.Setenv("url", "https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
-	os.Setenv("port", "3000")
-	os.Setenv("cron", "* * * * *")
-	os.Setenv("endpoint", "http://localhost:3001")
+	// set env variables for dev. uncomment below to set manually
+	// os.Setenv("url", "https://forecast.weather.gov/MapClick.php?lat=35.76148000000006&lon=-77.94274999999999")
+	// os.Setenv("port", "3000")
+	// os.Setenv("cron", "* * * * *")
+	// os.Setenv("endpoint", "http://localhost:3001")
 
 	if len(os.Getenv("cron")) > 0 {
 		cj := cron.New()
