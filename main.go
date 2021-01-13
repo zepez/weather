@@ -28,9 +28,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 // set up routes
 func handleRequests() {
 	http.HandleFunc("/", home)
-	// log, listening on port 10000
+	// log, listening on specified port
 	fmt.Println("listening on port " + os.Getenv("port"))
-	// listen on port 10000
 	log.Fatal(http.ListenAndServe(":"+os.Getenv("port"), nil))
 }
 

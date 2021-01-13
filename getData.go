@@ -34,7 +34,7 @@ func GetData(url string) interface{} {
 
 	// start colly
 	c := colly.NewCollector(
-		// Visit only domains: forecast.weather.gov
+		// Visit only domain: forecast.weather.gov
 		colly.AllowedDomains(domain),
 	)
 
@@ -84,7 +84,7 @@ func GetData(url string) interface{} {
 }
 
 func splitString(s string) string {
-	// split string via camel case into slice
+	// split string via camelcase into slice
 	arr := camelcase.Split(s)
 	var cleanedArr []string
 

@@ -19,7 +19,7 @@ RUN mkdir /app
 ADD . /app
 WORKDIR /app
 
-# compile your project
+# compile project
 RUN go mod vendor
 RUN go build
 
