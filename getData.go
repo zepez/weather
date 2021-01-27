@@ -9,19 +9,19 @@ import (
 )
 
 type total struct {
-	Image     string
-	Condition string
-	F         string
-	C         string
-	CrawledAt time.Time
-	Days      []day
+	Image     string    `json:"image"`
+	Condition string    `json:"condition"`
+	F         string    `json:"f"`
+	C         string    `json:"c"`
+	CrawledAt time.Time `json:"crawled_at"`
+	Days      []day     `json:"days"`
 }
 
 type day struct {
-	Period    string
-	Condition string
-	Image     string
-	Temp      string
+	Period    string `json:"period"`
+	Condition string `json:"condition"`
+	Image     string `json:"image"`
+	Temp      string `json:"temp"`
 }
 
 // home route logic
